@@ -26,7 +26,7 @@ console.log(`
 
   FLOW 1 - EMPLOYEE SHELL AND PERMISSIONS
   1. Verify Athul greeting, profile, and Junior Software Engineer role
-  2. Verify Dashboard, PMS, and Task links
+  2. Verify Dashboard, Perform, and Task navigation
   3. Verify permitted Employee sidebar modules
 
   FLOW 2 - EMPLOYEE DASHBOARD CONTENT
@@ -36,8 +36,8 @@ console.log(`
   4. Verify Leave, Attendance, and Organization active cards
 
   FLOW 3 - SIDEBAR NAVIGATION
-  1. PMS -> /pms
-  2. Task -> /task-timesheet
+  1. Perform -> /pms
+  2. Task & Timesheet -> /task-timesheet
 
   FLOW 4 - QUICK-ACCESS NAVIGATION
   1. Leave -> /leave/request-approvals/leave-application

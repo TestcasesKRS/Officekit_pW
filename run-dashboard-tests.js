@@ -29,7 +29,7 @@ console.log(`
 
   FLOW 1 - DASHBOARD SHELL
   1. Verify time-based greeting and logged-in Admin profile
-  2. Verify Dashboard, PMS, and Task links
+  2. Verify Dashboard, Perform, and Task navigation
   3. Verify My Profile, Company, Attendance, Leave, Payroll,
      Resolve, TalentHub, Settings, and AI Insight modules
 
@@ -42,8 +42,8 @@ console.log(`
   4. Verify Leave, Attendance, and Organization active cards
 
   FLOW 3 - SIDEBAR NAVIGATION
-  1. PMS -> /pms
-  2. Task -> /task-timesheet
+  1. Perform -> /pms
+  2. Task & Timesheet -> /task-timesheet
 
   FLOW 4 - QUICK-ACCESS NAVIGATION
   1. Leave -> /leave/request-approvals/leave-application

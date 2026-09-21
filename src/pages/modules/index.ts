@@ -43,7 +43,7 @@ export class RecruitmentPage extends ApplicationModulePage {
 
 export class PerformancePage extends ApplicationModulePage {
   constructor(page: Page) {
-    super(page, 'PMS');
+    super(page, 'Perform');
   }
 }
 
