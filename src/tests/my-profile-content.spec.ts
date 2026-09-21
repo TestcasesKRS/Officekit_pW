@@ -1,11 +1,10 @@
 import { expect, test } from '../fixtures/auth.fixture';
 import { MyProfilePage } from '../pages/MyProfilePage';
 import { monitorApplicationFailures } from '../utils/applicationFailures';
-import { expectSuccessfulDownload } from '../utils/downloads';
 import { captureScreen } from '../utils/screenshots';
 
 test.describe('My Profile content libraries dry-run @my-profile @dry-run', () => {
-  test('[P1] reads Forms and Policies and downloads an available document', async ({
+  test('[P1] reads Forms and Policies and opens an available document', async ({
     employeeSession,
   }) => {
     const { page } = employeeSession;
@@ -20,19 +19,26 @@ test.describe('My Profile content libraries dry-run @my-profile @dry-run', () =>
     await expect(page.getByText('Form Title', { exact: true })).toBeVisible();
     await expect(page.getByText('Description', { exact: true }).first()).toBeVisible();
 
-    const firstDataRow = page
+    const downloadableRow = page
       .getByRole('row')
       .filter({ has: page.getByRole('button', { name: /download/i }) })
-      .first();
-    await expect(firstDataRow).toBeVisible();
+      .last();
+    await expect(downloadableRow).toBeVisible();
     await captureScreen(page, 'my-profile-dry-run', 'forms-and-policies');
-    const download = firstDataRow.getByRole('button', { name: /download/i });
+    const download = downloadableRow.getByRole('button', { name: /download/i });
     await expect(
       download,
       'BROKEN FUNCTION: listed Forms and Policies document has no accessible download action',
     ).toBeVisible();
     await expect(download).toBeEnabled();
-    await expectSuccessfulDownload(page, download);
+
+    const [documentPage] = await Promise.all([
+      page.waitForEvent('popup', { timeout: 15_000 }),
+      download.click(),
+    ]);
+    await documentPage.waitForLoadState('domcontentloaded');
+    await documentPage.waitForURL((url) => url.href !== 'about:blank');
+    await expect(documentPage.locator('body > *').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'policies', exact: true }).click();
     await expect(page.getByRole('button', { name: 'policies', exact: true })).toBeVisible();
