@@ -20,7 +20,10 @@ test.describe('My Profile content libraries dry-run @my-profile @dry-run', () =>
     await expect(page.getByText('Form Title', { exact: true })).toBeVisible();
     await expect(page.getByText('Description', { exact: true }).first()).toBeVisible();
 
-    const firstDataRow = page.getByRole('row').nth(1);
+    const firstDataRow = page
+      .getByRole('row')
+      .filter({ has: page.getByRole('button', { name: /download/i }) })
+      .first();
     await expect(firstDataRow).toBeVisible();
     await captureScreen(page, 'my-profile-dry-run', 'forms-and-policies');
     const download = firstDataRow.getByRole('button', { name: /download/i });
@@ -28,6 +31,7 @@ test.describe('My Profile content libraries dry-run @my-profile @dry-run', () =>
       download,
       'BROKEN FUNCTION: listed Forms and Policies document has no accessible download action',
     ).toBeVisible();
+    await expect(download).toBeEnabled();
     await expectSuccessfulDownload(page, download);
 
     await page.getByRole('button', { name: 'policies', exact: true }).click();

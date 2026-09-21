@@ -10,3 +10,6 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-my-profile-language-lifecycle.md`
   summary: Preserve My Profile mutation screenshots and browser artifacts in a durable evidence store.
   evidence: Current screenshot and test-results paths may be ignored or replaced; confirm retention requirements and a target store before treating them as durable review evidence.
+- source_spec: `_bmad-output/implementation-artifacts/spec-fix-forms-policies-download-test.md`
+  summary: Surface monitored API failures when an expected browser download never starts.
+  evidence: The download timeout currently rejects before the test calls `assertNoFailures()`, so the directly actionable HTTP 404 is captured but omitted from the primary failure output.
