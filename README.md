@@ -108,6 +108,29 @@ records per module: one Approved, one rejected by the first Approver, and one re
 Approver. Set `FINANCIAL_LIFECYCLE_RUN_ID` to a unique value when a stable marker is needed across a
 manual retry; never reuse that value for concurrent runs.
 
+### Perform demo data
+
+The Perform demo-data workflow is beta-only and intentionally excluded from `npm test` by its
+`@mutating` tag. It requires the base admin and employee environment variables listed above. Run it
+only when the configured employee account is the employee intended for the demo:
+
+```bash
+npm run test:performance-demo-data
+```
+
+The command creates or reuses 50 deterministically named `Demo Framework` records, completes the
+primary Engineering Excellence framework to exactly 1000 points with KPI data, and adds clearly named
+competency and recommendation reference records. If no cycle blocks creation, it creates a separate
+`Demo Performance Cycle - Engineering Excellence` draft, assigns only the configured employee, seeds
+that employee's KPI goals, and verifies the Perform framework, cycle, employee, team, goal, reporting,
+and bell-curve screens.
+
+Reruns reuse exact-name matches and the existing employee assignment. Ambiguous duplicate names or
+assignments fail instead of guessing. Existing non-demo cycles, including `test-name`, are never
+changed, locked, finalized, deleted, or replaced; a blocking cycle causes an actionable failure after
+safe independent records have been retained. Do not run this command concurrently against the same
+tenant.
+
 The My Profile command runs the non-mutating regression dry run for Personal Info, Requests &
 Approvals, Forms and Policies, My Holidays, HR Forms & Policies, News Feeds, Surveys & Feedbacks,
 Organisation, Letter, and Salary Slip. Screenshots are written to `screenshots/my-profile-dry-run/`;

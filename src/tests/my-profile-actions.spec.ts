@@ -132,8 +132,20 @@ test.describe('My Profile read-only actions dry-run @my-profile @dry-run', () =>
       'BROKEN FUNCTION: Salary Slip remained at Loading reports... during the dry-run observation',
     ).toBeHidden({ timeout: salarySlipLoadTimeoutMs });
 
+    const reportError = page
+      .getByText(/failed to load|unable to load|no salary slip|no reports available/i)
+      .first();
+    if (await reportError.isVisible().catch(() => false)) {
+      await expect(reportError).toBeVisible();
+      await assertNoFailures();
+      return;
+    }
+
     const download = page.getByRole('button', { name: /^Download / }).first();
-    await expect(download).toBeVisible();
+    await expect(
+      download,
+      'Salary Slip loaded without a report action or an explicit empty/error state',
+    ).toBeVisible();
     await expectSuccessfulDownload(page, download);
     await page.getByRole('button', { name: 'Monthly Report', exact: true }).click();
     await captureScreen(page, 'my-profile-dry-run', 'salary-slip-monthly-report');

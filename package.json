@@ -32,6 +32,7 @@
     "test:my-profile": "playwright test --project=chromium --grep @my-profile --grep-invert @mutating",
     "test:my-profile:p0": "playwright test --project=chromium --grep \"@my-profile.*\\[P0\\]|\\[P0\\].*@my-profile\"",
     "test:my-profile:mutating": "playwright test --project=chromium --grep \"@my-profile.*@mutating|@mutating.*@my-profile\"",
+    "test:performance-demo-data": "playwright test src/tests/performance-demo-data.spec.ts --project=chromium --grep @performance-demo-data",
     "test:debug": "playwright test --debug",
     "test:login": "tsx scripts/run-login.ts",
     "report": "playwright show-report",

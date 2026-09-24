@@ -14,8 +14,8 @@ test.describe('My Profile content libraries dry-run @my-profile @dry-run', () =>
 
     await expect(page).toHaveURL(/\/my-profile\/forms-policy(?:\/|$)/);
     await expect(page.getByRole('heading', { name: 'Forms and Policies', exact: true })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'forms', exact: true })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'policies', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: /^forms$/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /^policies$/i })).toBeVisible();
     await expect(page.getByText('Form Title', { exact: true })).toBeVisible();
     await expect(page.getByText('Description', { exact: true }).first()).toBeVisible();
 
@@ -40,8 +40,9 @@ test.describe('My Profile content libraries dry-run @my-profile @dry-run', () =>
     await documentPage.waitForURL((url) => url.href !== 'about:blank');
     await expect(documentPage.locator('body > *').first()).toBeVisible();
 
-    await page.getByRole('button', { name: 'policies', exact: true }).click();
-    await expect(page.getByRole('button', { name: 'policies', exact: true })).toBeVisible();
+    const policiesTab = page.getByRole('button', { name: /^policies$/i });
+    await policiesTab.click();
+    await expect(page.getByText('Policy Name', { exact: true })).toBeVisible();
     await assertNoFailures();
   });
 

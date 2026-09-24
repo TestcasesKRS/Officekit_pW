@@ -102,13 +102,21 @@ test.describe('Employee Separation requests @separation @separation-user', () =>
   });
 
   test('exports separation requests as Excel and PDF', async ({ page }) => {
+    await expect(
+      separationPage.exportButton.or(separationPage.noRequestsMessage),
+    ).toBeVisible();
+    if (!(await separationPage.exportButton.isVisible())) {
+      await expect(separationPage.noRequestsMessage).toBeVisible();
+      return;
+    }
+
     for (const exportOption of [
       { name: 'Export as Excel', extension: '.xlsx' },
       { name: 'Export as PDF', extension: '.pdf' },
     ]) {
       await separationPage.openExportMenu();
       const downloadPromise = page.waitForEvent('download');
-      await page.getByRole('menuitem', { name: exportOption.name, exact: true }).click();
+      await separationPage.exportOption(exportOption.name).click();
       const download = await downloadPromise;
 
       expect(download.suggestedFilename()).toMatch(

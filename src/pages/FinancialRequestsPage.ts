@@ -667,11 +667,21 @@ export class FinancialRequestsPage {
     await this.pause();
   }
 
+  exportOption(name: string): Locator {
+    const visibleText = this.page
+      .getByText(name, { exact: true })
+      .and(this.page.locator(':visible'));
+    return this.page
+      .getByRole('menuitem', { name, exact: true })
+      .or(this.page.getByRole('button', { name, exact: true }))
+      .or(visibleText)
+      .first();
+  }
+
   async openExportMenu(): Promise<void> {
+    await expect(this.exportButton).toBeEnabled();
     await this.exportButton.click();
-    await this.page
-      .getByRole('menuitem', { name: 'Export as Excel', exact: true })
-      .waitFor({ state: 'visible', timeout: 5000 });
+    await expect(this.exportOption('Export as Excel')).toBeVisible({ timeout: 10_000 });
     await this.pause();
   }
 }

@@ -207,7 +207,7 @@ test.describe('Employee financial requests @financial-requests @financial-reques
       ]) {
         await financialRequests.openExportMenu();
         const downloadPromise = page.waitForEvent('download');
-        await page.getByRole('menuitem', { name: exportOption.name, exact: true }).click();
+        await financialRequests.exportOption(exportOption.name).click();
         const download = await downloadPromise;
 
         expect(download.suggestedFilename().toLowerCase()).toMatch(
