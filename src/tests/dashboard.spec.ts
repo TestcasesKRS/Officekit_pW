@@ -36,6 +36,7 @@ test.describe('OfficeKit HR Admin dashboard flows @dashboard', () => {
         await expect(dashboardPage.dashboardLink).toBeVisible();
         await expect(dashboardPage.performLink).toBeVisible();
         await expect(dashboardPage.taskButton).toBeVisible();
+        await expect(dashboardPage.aiInsightButton).toBeVisible();
       });
 
       await test.step('Verify expandable sidebar modules', async () => {
@@ -48,7 +49,6 @@ test.describe('OfficeKit HR Admin dashboard flows @dashboard', () => {
           'Resolve',
           'TalentHub',
           'Settings',
-          'AI Insight',
         ];
 
         for (const module of modules) {

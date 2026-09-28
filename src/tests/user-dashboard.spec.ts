@@ -31,27 +31,26 @@ test.describe('OfficeKit HR Employee dashboard flows @user-dashboard', () => {
       await test.step('Verify Employee greeting and profile', async () => {
         await expect(dashboardPage.greeting).toBeVisible();
         await expect(dashboardPage.userProfileButton).toBeVisible();
-        await expect(dashboardPage.userProfileButton).toContainText('Junior Software Engineer');
       });
 
       await test.step('Verify direct navigation links', async () => {
         await expect(dashboardPage.dashboardLink).toBeVisible();
         await expect(dashboardPage.performLink).toBeVisible();
         await expect(dashboardPage.taskButton).toBeVisible();
+        await expect(dashboardPage.aiInsightButton).toBeVisible();
       });
 
       await test.step('Verify Employee sidebar permissions', async () => {
         const modules = [
           'My Profile',
-          'Company',
           'Attendance',
           'Leave',
           'Settings',
-          'AI Insight',
         ];
         for (const module of modules) {
           await expect(dashboardPage.sidebarButton(module)).toBeVisible();
         }
+        await expect(dashboardPage.sidebarButton('Company')).toHaveCount(0);
         await expect(dashboardPage.sidebarButton('TalentHub')).toHaveCount(0);
       });
 

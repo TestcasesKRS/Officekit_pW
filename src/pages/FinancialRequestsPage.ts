@@ -681,7 +681,10 @@ export class FinancialRequestsPage {
   async openExportMenu(): Promise<void> {
     await expect(this.exportButton).toBeEnabled();
     await this.exportButton.click();
-    await expect(this.exportOption('Export as Excel')).toBeVisible({ timeout: 10_000 });
+    await expect(
+      this.exportOption('Export as Excel'),
+      'BROKEN FUNCTION: Export opened but download options were not rendered',
+    ).toBeVisible({ timeout: 10_000 });
     await this.pause();
   }
 }

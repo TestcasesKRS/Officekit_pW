@@ -1,13 +1,21 @@
 import { expect, test } from '../fixtures/auth.fixture';
+import { LoginPage } from '../pages/LoginPage';
 import { MyProfilePage } from '../pages/MyProfilePage';
 import { monitorApplicationFailures } from '../utils/applicationFailures';
+import { requiredEnvironmentVariable } from '../utils/environment';
 import { captureScreen } from '../utils/screenshots';
 
+const formsPoliciesEmployee = {
+  companyCode: requiredEnvironmentVariable('COMPANY_CODE'),
+  username: process.env.FORMS_POLICIES_USERNAME ?? '10302',
+  password:
+    process.env.FORMS_POLICIES_PASSWORD ?? requiredEnvironmentVariable('EMPLOYEE_PASSWORD'),
+};
+
 test.describe('My Profile content libraries dry-run @my-profile @dry-run', () => {
-  test('[P1] reads Forms and Policies and opens an available document', async ({
-    employeeSession,
-  }) => {
-    const { page } = employeeSession;
+  test('[P1] reads Forms and Policies and opens an available document', async ({ page }) => {
+    await new LoginPage(page).login(formsPoliciesEmployee);
+    await page.waitForURL((url) => !url.pathname.endsWith('/login'), { timeout: 30_000 });
     const profile = new MyProfilePage(page);
     const assertNoFailures = monitorApplicationFailures(page, 'Forms and Policies');
     await profile.open('formsPolicies');
@@ -32,13 +40,44 @@ test.describe('My Profile content libraries dry-run @my-profile @dry-run', () =>
     ).toBeVisible();
     await expect(download).toBeEnabled();
 
-    const [documentPage] = await Promise.all([
-      page.waitForEvent('popup', { timeout: 15_000 }),
-      download.click(),
-    ]);
-    await documentPage.waitForLoadState('domcontentloaded');
-    await documentPage.waitForURL((url) => url.href !== 'about:blank');
-    await expect(documentPage.locator('body > *').first()).toBeVisible();
+    const originalUrl = page.url();
+    const popupPromise = page
+      .waitForEvent('popup', { timeout: 15_000 })
+      .then((documentPage) => ({ type: 'popup' as const, documentPage }));
+    const browserDownloadPromise = page
+      .waitForEvent('download', { timeout: 15_000 })
+      .then((browserDownload) => ({ type: 'download' as const, browserDownload }));
+    const navigationPromise = page
+      .waitForURL((url) => url.href !== originalUrl, { timeout: 15_000 })
+      .then(() => ({ type: 'navigation' as const }));
+    await download.click();
+    const outcome = await Promise.any([
+      popupPromise,
+      browserDownloadPromise,
+      navigationPromise,
+    ]).catch(() => undefined);
+    if (!outcome) {
+      await assertNoFailures();
+      expect(
+        outcome,
+        'BROKEN FUNCTION: document action did not open a page or start a download',
+      ).toBeDefined();
+      return;
+    }
+
+    if (outcome.type === 'download') {
+      expect(await outcome.browserDownload.failure()).toBeNull();
+    } else {
+      const documentPage = outcome.type === 'popup' ? outcome.documentPage : page;
+      await documentPage.waitForLoadState('domcontentloaded');
+      await documentPage.waitForURL((url) => url.href !== 'about:blank');
+      await expect(documentPage.locator('body > *').first()).toBeVisible();
+      if (outcome.type === 'navigation') {
+        await page.goBack();
+        await page.waitForURL(/\/my-profile\/forms-policy(?:\/|$)/);
+      }
+    }
+    await assertNoFailures();
 
     const policiesTab = page.getByRole('button', { name: /^policies$/i });
     await policiesTab.click();

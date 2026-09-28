@@ -28,6 +28,7 @@ export class DashboardPage {
   readonly requestsAndApprovals: Locator;
   readonly myTeam: Locator;
   readonly feeds: Locator;
+  readonly aiInsightButton: Locator;
 
   constructor(
     readonly page: Page,
@@ -80,6 +81,7 @@ export class DashboardPage {
     this.requestsAndApprovals = page.getByText('Request & Approvals', { exact: true }).first();
     this.myTeam = page.getByText('My Team', { exact: true }).first();
     this.feeds = page.getByText('Feeds', { exact: true }).first();
+    this.aiInsightButton = page.getByRole('button', { name: 'AI Insight', exact: true });
   }
 
   private async pause(): Promise<void> {
@@ -89,7 +91,7 @@ export class DashboardPage {
   }
 
   sidebarButton(name: string): Locator {
-    return this.page.getByRole('button', { name, exact: true });
+    return this.dashboardLink.locator('xpath=..').getByRole('button', { name, exact: true });
   }
 
   summaryMetric(name: string): Locator {

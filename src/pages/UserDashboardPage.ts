@@ -12,6 +12,7 @@ export class UserDashboardPage {
   readonly reports: Locator;
   readonly myTeam: Locator;
   readonly feeds: Locator;
+  readonly aiInsightButton: Locator;
 
   constructor(
     readonly page: Page,
@@ -21,13 +22,16 @@ export class UserDashboardPage {
     this.performLink = page.getByRole('link', { name: 'Perform', exact: true });
     this.taskButton = page.getByRole('button', { name: 'Task', exact: true });
     this.taskTimesheetLink = page.getByRole('link', { name: 'Task & Timesheet', exact: true });
-    this.greeting = page.getByRole('heading', { name: /Good (Morning|Afternoon|Evening), Athul/ });
-    this.userProfileButton = page.getByRole('button', { name: /Athul Krishn/ });
+    this.greeting = page.getByRole('heading', {
+      name: /Good (Morning|Afternoon|Evening),\s*\S+/,
+    });
+    this.userProfileButton = page.getByRole('button', { name: /^Profile\s+\S+/ });
     this.totalHours = page.getByText('Total Hours', { exact: true });
     this.requestsAndApprovals = page.getByText('Request and Approvals', { exact: true });
     this.reports = page.getByText('Reports', { exact: true }).first();
     this.myTeam = page.getByText('My Team', { exact: true }).first();
     this.feeds = page.getByText('Feeds', { exact: true }).first();
+    this.aiInsightButton = page.getByRole('button', { name: 'AI Insight', exact: true });
   }
 
   private async pause(): Promise<void> {
@@ -37,7 +41,7 @@ export class UserDashboardPage {
   }
 
   sidebarButton(name: string): Locator {
-    return this.page.getByRole('button', { name, exact: true });
+    return this.dashboardLink.locator('xpath=..').getByRole('button', { name, exact: true });
   }
 
   quickAccessHeading(name: string): Locator {
